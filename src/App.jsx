@@ -283,14 +283,14 @@ function Preloader({ loaded }) {
           className="fixed inset-0 z-[10000] flex flex-col items-center justify-center"
           style={{ backgroundColor: C.bg }}
         >
-          <motion.div
-            animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] }}
+          <motion.h1
+            animate={{ scale: [0.97, 1.03, 0.97], opacity: [0.8, 1, 0.8] }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative flex items-center justify-center"
+            className="font-bebas text-6xl md:text-8xl tracking-[0.08em]"
+            style={{ color: C.red }}
           >
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-2" style={{ borderColor: C.red }} />
-            <span className="absolute font-bebas text-5xl md:text-7xl tracking-[0.15em]" style={{ color: C.red }}>F1</span>
-          </motion.div>
+            FORMULA 1
+          </motion.h1>
           <p className="font-barlow text-sm tracking-widest mt-8 uppercase" style={{ color: C.muted }}>Fetching 2026 season data...</p>
         </motion.div>
       )}
