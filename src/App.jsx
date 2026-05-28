@@ -482,9 +482,34 @@ function Pill({ label, value }) {
 function ConstructorChart({ constructors }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
-  const height = (constructors?.length || 0) * 60 + 40
+  const height = (constructors?.length || 0) * 52 + 40
 
   if (!constructors?.length) return null
+
+  const maxPts = Math.max(...constructors.map(c => c.points))
+
+  function CustomLabel({ x, y, width, height, value }) {
+    return (
+      <text x={Number(x) + Number(width) + 12} y={Number(y) + Number(height) / 2 + 1} fill={C.text} textAnchor="start" dominantBaseline="middle" className="font-bebas text-sm" style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 14, letterSpacing: '0.03em' }}>
+        {value}
+      </text>
+    )
+  }
+
+  function CustomTooltip({ active, payload }) {
+    if (!active || !payload?.length) return null
+    const d = payload[0].payload
+    return (
+      <div className="p-3 rounded" style={{ backgroundColor: C.surface, border: `1px solid ${C.border}` }}>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
+          <p className="font-barlow text-xs tracking-widest uppercase" style={{ color: C.muted }}>{d.name}</p>
+        </div>
+        <p className="font-bebas text-2xl tracking-wide" style={{ color: C.text }}>{d.points} <span className="font-barlow text-[10px] tracking-widest uppercase" style={{ color: C.muted }}>pts</span></p>
+        <p className="font-barlow text-[11px] tracking-wider mt-1" style={{ color: C.muted }}>P{d.position} · {d.wins} win{d.wins !== 1 ? 's' : ''} · {d.powerUnit}</p>
+      </div>
+    )
+  }
 
   return (
     <Section id="constructors">
@@ -495,20 +520,15 @@ function ConstructorChart({ constructors }) {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-7xl mx-auto"
       >
-        <h2 className="font-bebas mb-12" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', color: C.text }}>
+        <h2 className="font-bebas mb-10" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', color: C.text }}>
           Constructors&apos; Battle
         </h2>
         <ResponsiveContainer width="100%" height={height}>
-          <BarChart data={constructors} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
-            <XAxis type="number" tick={{ fill: C.muted, fontSize: 12, fontFamily: 'Barlow Condensed' }} axisLine={false} tickLine={false} />
-            <YAxis type="category" dataKey="shortName" tick={{ fill: C.text, fontSize: 13, fontFamily: 'Barlow Condensed' }} axisLine={false} tickLine={false} width={90} />
-            <Tooltip
-              contentStyle={{ backgroundColor: C.surface, border: `1px solid ${C.border}`, borderRadius: '4px', boxShadow: 'none' }}
-              itemStyle={{ color: C.text, fontFamily: 'Barlow Condensed', fontSize: 14 }}
-              labelStyle={{ color: C.muted, fontFamily: 'Barlow Condensed', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em' }}
-              formatter={(value, name, props) => [`${value} pts`, props.payload.name]}
-            />
-            <Bar dataKey="points" radius={[0, 4, 4, 0]} animationDuration={1200}>
+          <BarChart data={constructors} layout="vertical" margin={{ top: 0, right: 60, left: 0, bottom: 0 }} barCategoryGap={6}>
+            <XAxis type="number" hide domain={[0, maxPts * 1.15]} />
+            <YAxis type="category" dataKey="shortName" tick={{ fill: C.text, fontSize: 12, fontFamily: 'Barlow Condensed', letterSpacing: '0.05em', fontWeight: 600 }} axisLine={false} tickLine={false} width={75} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+            <Bar dataKey="points" radius={[0, 3, 3, 0]} animationDuration={1200} minBarSize={14} label={<CustomLabel />}>
               {constructors.map((entry, idx) => (
                 <Cell key={idx} fill={entry.color || C.red} />
               ))}
@@ -914,13 +934,6 @@ export default function App() {
     }
 
     fetchData()
-  }, [])
-
-  useEffect(() => {
-    const link = document.createElement('link')
-    link.href = 'https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600&family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap'
-    link.rel = 'stylesheet'
-    document.head.appendChild(link)
   }, [])
 
   if (error) return <ErrorFallback />
