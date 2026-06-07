@@ -2313,7 +2313,7 @@ export default function App() {
         })
       } catch (err) {
         console.error(`Fetch failed for ${year}, using fallback:`, err)
-        setF1Data({ ...FALLBACK, season: year })
+        setF1Data({ ...FALLBACK, season: year, resultsByRound: {} })
       }
     }
 
