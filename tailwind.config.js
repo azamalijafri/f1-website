@@ -7,9 +7,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        bebas: ['"Bebas Neue"', 'cursive'],
-        barlow: ['"Barlow Condensed"', 'sans-serif'],
-        playfair: ['"Playfair Display"', 'serif'],
+        bebas: ['"Bebas Neue"'],
+        barlow: ['"Barlow Condensed"'],
+        playfair: ['"Playfair Display"'],
       },
     },
   },

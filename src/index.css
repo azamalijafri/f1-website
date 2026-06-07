@@ -17,6 +17,7 @@ body {
   color: #f5f5f5;
   cursor: none;
   overflow-x: hidden;
+  font-family: 'Barlow Condensed';
 }
 
 ::-webkit-scrollbar {
